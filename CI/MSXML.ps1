@@ -1,5 +1,5 @@
 #Region: Detection
-New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT" | Out-Null
+New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT"
 $FileNames = @(
     "msxml.dll",
     "msxml4.dll"
@@ -45,7 +45,7 @@ Foreach ($Path in $CLSIDPaths) {
 Return $true
 #EndRegion
 #Region: Remediation
-New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT" | Out-Null
+New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT"
 $FileNames = @(
     "msxml.dll",
     "msxml4.dll"
