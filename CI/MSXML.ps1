@@ -28,6 +28,11 @@ If ($OSArch -eq "64") {
     $FilePath = "$env:WINDIR\System32"
     $CLSIDPaths = "HKCR:\CLSID", "HKLM:\SOFTWARE\Classes\CLSID"
 }
+# Check if the software is installed and return false if it is
+$MSXML = Get-Package -Name "MSXML 4.0 * Parser"
+If ($MSXML) {
+    Return $false
+}
 # Check if the DLLs are present in %sysnative%\System32 and return false if they are
 Foreach ($File in $FileNames) {
     If (Test-Path "$FilePath\$File") {
@@ -73,6 +78,11 @@ If ($OSArch -eq "64") {
 } Else {
     $FilePath = "$env:WINDIR\System32"
     $CLSIDPaths = "HKCR:\CLSID", "HKLM:\SOFTWARE\Classes\CLSID"
+}
+# Check if the software is installed and uninstall it if it is
+$MSXML = Get-Package -Name "MSXML 4.0 * Parser"
+If ($MSXML) {
+    $MSXML | Uninstall-Package -Force -Confirm:$false
 }
 # Check if the DLLs are present in %sysnative%\System32 and if they are unregister them, then move them if they're still present
 Foreach ($File in $FileNames) {
