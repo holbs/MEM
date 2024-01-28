@@ -82,7 +82,7 @@ If ($OSArch -eq "64") {
 # Check if the software is installed and uninstall it if it is
 $MSXML = Get-Package -Name "MSXML 4.0 * Parser"
 If ($MSXML) {
-    $MSXML | Uninstall-Package -Force -Confirm:$false
+    $MSXML | Uninstall-Package -AllVersions -Force -Confirm:$false
 }
 # Check if the DLLs are present in %sysnative%\System32 and if they are unregister them, then move them if they're still present
 Foreach ($File in $FileNames) {
