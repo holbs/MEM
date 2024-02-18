@@ -87,7 +87,10 @@ If ([Environment]::Is64BitOperatingSystem) {
 $UninstallKeys = Get-ItemProperty "$Registry\*"
 Foreach ($Key in $UninstallKeys) {
     If ($Key.DisplayName -like "MSXML 4.0 * Parser") {
-        Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\MsiExec.exe" -ArgumentList "/x $($Key.PSChildName) /qn"
+        $Uninstall = Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\MsiExec.exe" -ArgumentList "/x $($Key.PSChildName) /qn" -PassThru
+        While (Get-Process -Pid $Uninstall.Id -ErrorAction SilentlyContinue) {
+            Start-Sleep -Seconds 1
+        }
     }
 }
 # Check if the DLLs are present in %sysnative%\System32 and if they are unregister them, then move them if they're still present
