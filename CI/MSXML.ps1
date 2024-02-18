@@ -23,11 +23,11 @@ $CLSIDs = @(
 If ([Environment]::Is64BitOperatingSystem) {
     $FilePath = "$env:WINDIR\SysWOW64"
     $CLSIDPaths = "HKCR:\WOW6432Node\CLSID", "HKLM:\SOFTWARE\WOW6432Node\Classes\CLSID"
-    $Registry = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+    $Registry = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 } Else {
     $FilePath = "$env:WINDIR\System32"
     $CLSIDPaths = "HKCR:\CLSID", "HKLM:\SOFTWARE\Classes\CLSID"
-    $Registry = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    $Registry = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 }
 # Check if the software is installed and return false if it is
 $UninstallKeys = Get-ItemProperty "$Registry\*"
@@ -77,11 +77,11 @@ $CLSIDs = @(
 If ([Environment]::Is64BitOperatingSystem) {
     $FilePath = "$env:WINDIR\SysWOW64"
     $CLSIDPaths = "HKCR:\WOW6432Node\CLSID", "HKLM:\SOFTWARE\WOW6432Node\Classes\CLSID"
-    $Registry = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+    $Registry = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 } Else {
     $FilePath = "$env:WINDIR\System32"
     $CLSIDPaths = "HKCR:\CLSID", "HKLM:\SOFTWARE\Classes\CLSID"
-    $Registry = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    $Registry = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 }
 # Check if the software is installed and uninstall it if it is
 $UninstallKeys = Get-ItemProperty "$Registry\*"
