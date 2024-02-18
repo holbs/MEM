@@ -1,5 +1,5 @@
 #Region: Detection
-New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT"
+New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT" | Out-Null
 $FileNames = @(
     "msxml.dll",
     "msxml4.dll"
@@ -20,18 +20,21 @@ $CLSIDs = @(
     "{88d969c3-f192-11d4-a65f-0040963251e5}"
 )
 # Check the architecture so we can set paths based on x64 or x86 Windows
-$OSArch = [string](Get-CimInstance -Class Win32_Processor).AddressWidth
-If ($OSArch -eq "64") {
+If ([Environment]::Is64BitOperatingSystem) {
     $FilePath = "$env:WINDIR\SysWOW64"
     $CLSIDPaths = "HKCR:\WOW6432Node\CLSID", "HKLM:\SOFTWARE\WOW6432Node\Classes\CLSID"
+    $Registry = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 } Else {
     $FilePath = "$env:WINDIR\System32"
     $CLSIDPaths = "HKCR:\CLSID", "HKLM:\SOFTWARE\Classes\CLSID"
+    $Registry = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 }
 # Check if the software is installed and return false if it is
-$MSXML = Get-Package -Name "MSXML 4.0 * Parser"
-If ($MSXML) {
-    Return $false
+$UninstallKeys = Get-ItemProperty "$Registry\*"
+Foreach ($Key in $UninstallKeys) {
+    If ($Key.DisplayName -like "MSXML 4.0 * Parser") {
+        Return "Installed"
+    }
 }
 # Check if the DLLs are present in %sysnative%\System32 and return false if they are
 Foreach ($File in $FileNames) {
@@ -50,7 +53,7 @@ Foreach ($Path in $CLSIDPaths) {
 Return $true
 #EndRegion
 #Region: Remediation
-New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT"
+New-PSDrive -Name HKCR -PSProvider Registry -Root "HKEY_CLASSES_ROOT" | Out-Null
 $FileNames = @(
     "msxml.dll",
     "msxml4.dll"
@@ -71,18 +74,21 @@ $CLSIDs = @(
     "{88d969c3-f192-11d4-a65f-0040963251e5}"
 )
 # Check the architecture so we can set paths based on x64 or x86 Windows
-$OSArch = [string](Get-CimInstance -Class Win32_Processor).AddressWidth
-If ($OSArch -eq "64") {
+If ([Environment]::Is64BitOperatingSystem) {
     $FilePath = "$env:WINDIR\SysWOW64"
     $CLSIDPaths = "HKCR:\WOW6432Node\CLSID", "HKLM:\SOFTWARE\WOW6432Node\Classes\CLSID"
+    $Registry = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 } Else {
     $FilePath = "$env:WINDIR\System32"
     $CLSIDPaths = "HKCR:\CLSID", "HKLM:\SOFTWARE\Classes\CLSID"
+    $Registry = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 }
 # Check if the software is installed and uninstall it if it is
-$MSXML = Get-Package -Name "MSXML 4.0 * Parser"
-If ($MSXML) {
-    $MSXML | Uninstall-Package -AllVersions -Force -Confirm:$false
+$UninstallKeys = Get-ItemProperty "$Registry\*"
+Foreach ($Key in $UninstallKeys) {
+    If ($Key.DisplayName -like "MSXML 4.0 * Parser") {
+        Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\MsiExec.exe" -ArgumentList "/x $($Key.PSChildName) /qn"
+    }
 }
 # Check if the DLLs are present in %sysnative%\System32 and if they are unregister them, then move them if they're still present
 Foreach ($File in $FileNames) {
