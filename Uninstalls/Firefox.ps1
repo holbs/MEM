@@ -7,7 +7,7 @@ $RegistryLocations | Foreach-Object {
     $RegistryKeys = Get-ItemProperty "$_\*"
     Foreach ($Key in $RegistryKeys) {
         If ($Key.DisplayName -like "Mozilla Firefox *") {
-            Start-Process -WindowStyle hidden -FilePath $Key.UninstallString -ArgumentList "/s" -Wait
+            Return "Installed"
         }
     }
 }
