@@ -33,7 +33,7 @@ If ([Environment]::Is64BitOperatingSystem) {
 $UninstallKeys = Get-ItemProperty "$Registry\*"
 Foreach ($Key in $UninstallKeys) {
     If ($Key.DisplayName -like "MSXML 4.0 * Parser") {
-        Return "Installed"
+        Return $false
     }
 }
 # Check if the DLLs are present in %sysnative%\System32 and return false if they are
