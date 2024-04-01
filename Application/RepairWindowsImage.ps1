@@ -13,11 +13,11 @@ New-Item "HKLM:\SOFTWARE\Classes\toastnotification\DefaultIcon" -Force
 New-Item "HKLM:\SOFTWARE\Classes\toastnotification\shell" -Force
 New-Item "HKLM:\SOFTWARE\Classes\toastnotification\shell\open" -Force
 New-Item "HKLM:\SOFTWARE\Classes\toastnotification\shell\open\command" -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification" -Name "(default)" -Value "URL:PowerShell Toast Notification Protocol" -PropertyType String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification" -Name "URL Protocol" -Value "" -PropertyType String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\DefaultIcon" -Name "(default)" -Value "%windir%\System32\WindowsPowerShell\v1.0\powershell.exe,1" -PropertyType String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\shell" -Name "(default)" -Value "open" -PropertyType String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\shell\open\command" -Name "(default)" -Value "`"$env:ProgramData\ToastNotification\RestartComputer.cmd`" %1" -PropertyType String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification" -Name "(default)" -Value "URL:PowerShell Toast Notification Protocol" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification" -Name "URL Protocol" -Value "" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\DefaultIcon" -Name "(default)" -Value "%windir%\System32\WindowsPowerShell\v1.0\powershell.exe,1" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\shell" -Name "(default)" -Value "open" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\shell\open\command" -Name "(default)" -Value "`"$env:ProgramData\ToastNotification\RestartComputer.cmd`" %1" -Type String -Force
 # Copy restart script to %ProgramData% so it can be called through the notification
 New-Item -Path "$env:ProgramData\ToastNotification" -ItemType Directory -Force
 Copy-Item -Path "$PSScriptHost\RestartComputer.cmd" -Destination "$env:ProgramData\ToastNotification\RestartComputer.cmd" -Force -Confirm:$false # RestartComputer.cmd is in the application content, and triggers the PowerShell script
