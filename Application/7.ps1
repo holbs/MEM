@@ -36,7 +36,7 @@ $ToastXml = @"
     </visual>
     <actions>
         <action content="Snooze" activationType="protocol" arguments="" />
-        <action content="Restart" activationType="protocol" arguments="toastshell://Restart-Computer -Delay 5" />
+        <action content="Restart" activationType="protocol" arguments="toastshell://Restart-Computer" />
     </actions>
 </toast>
 "@
