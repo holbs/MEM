@@ -8,27 +8,26 @@ $CheckHealth = Repair-WindowsImage -Online -CheckHealth
 $ScanHealth = Repair-WindowsImage -Online -ScanHealth
 $RestoreHealth = Repair-WindowsImage -Online -RestoreHealth
 # Create registry settings for a custom URI so PowerShell can exectue scripts from a notification
-New-Item "HKLM:\SOFTWARE\Classes\toastnotification" -Force
-New-Item "HKLM:\SOFTWARE\Classes\toastnotification\DefaultIcon" -Force
-New-Item "HKLM:\SOFTWARE\Classes\toastnotification\shell" -Force
-New-Item "HKLM:\SOFTWARE\Classes\toastnotification\shell\open" -Force
-New-Item "HKLM:\SOFTWARE\Classes\toastnotification\shell\open\command" -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification" -Name "(default)" -Value "URL:PowerShell Toast Notification Protocol" -Type String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification" -Name "URL Protocol" -Value "" -Type String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\DefaultIcon" -Name "(default)" -Value "%windir%\System32\WindowsPowerShell\v1.0\powershell.exe,1" -Type String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\shell" -Name "(default)" -Value "open" -Type String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastnotification\shell\open\command" -Name "(default)" -Value "`"$env:ProgramData\ToastNotification\RestartComputer.cmd`" %1" -Type String -Force
-# Copy restart script to %ProgramData% so it can be called through the notification
-New-Item -Path "$env:ProgramData\ToastNotification" -ItemType Directory -Force
-Copy-Item -Path "$PSScriptHost\RestartComputer.cmd" -Destination "$env:ProgramData\ToastNotification\RestartComputer.cmd" -Force -Confirm:$false # RestartComputer.cmd is in the application content, and triggers the PowerShell script
-Copy-Item -Path "$PSScriptHost\RestartComputer.ps1" -Destination "$env:ProgramData\ToastNotification\RestartComputer.ps1" -Force -Confirm:$false # RestartComputer.ps1 is in the application content, and runs Restart-Computer
-# If the Repair-WindowsImage commands did not require a restart then run sfc /scannow
+New-Item "HKLM:\SOFTWARE\Classes\toastshell" -Force
+New-Item "HKLM:\SOFTWARE\Classes\toastshell\DefaultIcon" -Force
+New-Item "HKLM:\SOFTWARE\Classes\toastshell\shell" -Force
+New-Item "HKLM:\SOFTWARE\Classes\toastshell\shell\open" -Force
+New-Item "HKLM:\SOFTWARE\Classes\toastshell\shell\open\command" -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell" -Name "(default)" -Value "URL:PowerShell Toast Notification Protocol" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell" -Name "URL Protocol" -Value "" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\DefaultIcon" -Name "(default)" -Value "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe,1" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\shell" -Name "(default)" -Value "open" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\shell\open\command" -Name "(default)" -Value "`"$env:ProgramData\ToastShell\ToastShell.cmd`" %1" -Type String -Force
+# Copy scripts to %ProgramData% so they can be called through the notification
+New-Item -Path "$env:ProgramData\ToastShell" -ItemType Directory -Force
+Copy-Item -Path "$PSScriptHost\ToastShell.cmd" -Destination "$env:ProgramData\ToastShell\ToastShell.cmd" -Force -Confirm:$false # %windir%\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle hidden -ExecutionPolicy bypass -NoLogo -NoProfile -File "%~dp0ToastShell.ps1" "%*"
+Copy-Item -Path "$PSScriptHost\ToastShell.ps1" -Destination "$env:ProgramData\ToastShell\ToastShell.ps1" -Force -Confirm:$false # Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $Args.Trim('/').Replace('toastshell://',"")
+# If the Repair-WindowsImage commands did not require a restart then run sfc /scannow before prompting for reboot
 If ($CheckHealth.RestartNeeded -ne $true -and $ScanHealth.RestartNeeded -ne $true -and $RestoreHealth.RestartNeeded -ne $true) {
-    # Trigger SFC /scannow
     Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\sfc.exe" -ArgumentList "/scannow"
     Wait-Process -Name "sfc" -ErrorAction SilentlyContinue
 }
-#  Prompt the user to restart via a toast notification
+# Show a toast notification prompting the user to restart, with an option to snooze, or restart (snooze just dismisses until ConfigMgr completes detection again and tries to 'install')
 $ToastXml = @"
 <toast>
     <visual>
@@ -40,7 +39,7 @@ $ToastXml = @"
     </visual>
     <actions>
         <action content="Snooze" activationType="protocol" arguments="" />
-        <action content="Restart" activationType="protocol" arguments="toastnotification://trigger" />
+        <action content="Restart" activationType="protocol" arguments="toastshell://Restart-Computer -Delay 5" />
     </actions>
 </toast>
 "@
