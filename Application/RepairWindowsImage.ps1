@@ -7,6 +7,11 @@ If ((Repair-WindowsImage -Online -CheckHealth).ImageHealthState -eq "Healthy") {
 $CheckHealth = Repair-WindowsImage -Online -CheckHealth
 $ScanHealth = Repair-WindowsImage -Online -ScanHealth
 $RestoreHealth = Repair-WindowsImage -Online -RestoreHealth
+# If the Repair-WindowsImage commands did not require a restart then run sfc /scannow before prompting for reboot
+If ($CheckHealth.RestartNeeded -ne $true -and $ScanHealth.RestartNeeded -ne $true -and $RestoreHealth.RestartNeeded -ne $true) {
+    Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\sfc.exe" -ArgumentList "/scannow"
+    Wait-Process -Name "sfc" -ErrorAction SilentlyContinue
+}
 # Create registry settings for a custom URI so PowerShell can exectue scripts from a notification
 New-Item "HKLM:\SOFTWARE\Classes\toastshell" -Force
 New-Item "HKLM:\SOFTWARE\Classes\toastshell\DefaultIcon" -Force
@@ -22,11 +27,6 @@ New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\shell\open\command" -N
 New-Item -Path "$env:ProgramData\ToastShell" -ItemType Directory -Force
 Copy-Item -Path "$PSScriptHost\ToastShell.cmd" -Destination "$env:ProgramData\ToastShell\ToastShell.cmd" -Force -Confirm:$false # %windir%\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle hidden -ExecutionPolicy bypass -NoLogo -NoProfile -File "%~dp0ToastShell.ps1" "%*"
 Copy-Item -Path "$PSScriptHost\ToastShell.ps1" -Destination "$env:ProgramData\ToastShell\ToastShell.ps1" -Force -Confirm:$false # Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $Args.Trim('/').Replace('toastshell://',"")
-# If the Repair-WindowsImage commands did not require a restart then run sfc /scannow before prompting for reboot
-If ($CheckHealth.RestartNeeded -ne $true -and $ScanHealth.RestartNeeded -ne $true -and $RestoreHealth.RestartNeeded -ne $true) {
-    Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\sfc.exe" -ArgumentList "/scannow"
-    Wait-Process -Name "sfc" -ErrorAction SilentlyContinue
-}
 # Show a toast notification prompting the user to restart, with an option to snooze, or restart (snooze just dismisses until ConfigMgr completes detection again and tries to 'install')
 $ToastXml = @"
 <toast>
