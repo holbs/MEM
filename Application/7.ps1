@@ -19,11 +19,11 @@ New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell" -Name "(default)" -Va
 New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell" -Name "URL Protocol" -Value "" -Type String -Force
 New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\DefaultIcon" -Name "(default)" -Value "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe,1" -Type String -Force
 New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\shell" -Name "(default)" -Value "open" -Type String -Force
-New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\shell\open\command" -Name "(default)" -Value "`"$env:ProgramData\ToastShell\ToastShell.cmd`" %1" -Type String -Force
+New-ItemProperty -Path "HKLM:\SOFTWARE\Classes\toastshell\shell\open\command" -Name "(default)" -Value "`"$env:WINDIR\ToastShell\ToastShell.cmd`" %1" -Type String -Force
 # Copy scripts to %ProgramData% so they can be called through the notification
-New-Item -Path "$env:ProgramData\ToastShell" -ItemType Directory -Force
-Copy-Item -Path "$PSScriptHost\ToastShell.cmd" -Destination "$env:ProgramData\ToastShell\ToastShell.cmd" -Force -Confirm:$false # %windir%\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle hidden -ExecutionPolicy bypass -NoLogo -NoProfile -File "%~dp0ToastShell.ps1" "%*"
-Copy-Item -Path "$PSScriptHost\ToastShell.ps1" -Destination "$env:ProgramData\ToastShell\ToastShell.ps1" -Force -Confirm:$false # Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $Args.Trim('/').Replace('toastshell://',"")
+New-Item -Path "$env:WINDIR\ToastShell" -ItemType Directory -Force
+Copy-Item -Path "$PSScriptHost\ToastShell.cmd" -Destination "$env:WINDIR\ToastShell\ToastShell.cmd" -Force -Confirm:$false # %windir%\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle hidden -ExecutionPolicy bypass -NoLogo -NoProfile -File "%~dp0ToastShell.ps1" "%*"
+Copy-Item -Path "$PSScriptHost\ToastShell.ps1" -Destination "$env:WINDIR\ToastShell\ToastShell.ps1" -Force -Confirm:$false # Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList $Args.Trim('/').Replace('toastshell://',"")
 # Show a toast notification prompting the user to restart, with an option to snooze, or restart (snooze just dismisses until ConfigMgr completes detection again and tries to 'install')
 $ToastXml = @"
 <toast>
