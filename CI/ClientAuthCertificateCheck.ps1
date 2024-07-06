@@ -14,5 +14,5 @@ Foreach ($Certificate in $ClientAuthCerts) {
 Return $CertsCompliance
 #EndRegion
 #Region: Remediation
-& $env:WINDIR\System32\gpupdate /force /target:computer | Out-Null
+& $env:WINDIR\System32\gpupdate.exe /force /target:computer | Out-Null
 #EndRegion
