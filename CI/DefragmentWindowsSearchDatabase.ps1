@@ -8,7 +8,7 @@ Try {
     Wait-Process -Name "EsentUtl" -ErrorAction SilentlyContinue
     Set-Service -Name "wsearch" -StartupType "Automatic" -Status "Running" -ErrorAction Stop
 } Catch {
-    Set-Service -Name "wsearch" -StartupType "Automatic" -Status "Running" -ErrorAction Stop
-    Set-Service -Name "wsearch" -StartupType "Automatic" -Status "Running" -ErrorAction Stop
+    Set-Service -Name "wsearch" -StartupType "Automatic" -Status "Running" -ErrorAction SilentlyContinue
+    Set-Service -Name "wsearch" -StartupType "Automatic" -Status "Running" -ErrorAction SilentlyContinue
 }
 #EndRegion
