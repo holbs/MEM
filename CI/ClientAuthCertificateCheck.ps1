@@ -1,13 +1,17 @@
 #Region: Detection
-$CAIssueServers = @("CN=PKIServer, DC=contoso, DC=com")
-$ClientAuthCert = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object {$_.Issuer -in $CAIssueServers} | Where-Object {$_.Extensions | Where-Object {$_.Format(0) -match "Client Authenication"}} | Sort-Object NotAfter -Descending | Select-Object -f 1
-If ($ClientAuthCert.NotAfter -ge (Get-Date)) {
-    Return $true
-} Elseif ($ClientAuthCert.NotAfter -lt (Get-Date)) {
-    Return $false
-} Else {
-    Return $false
+$CAIssuingServer = "CN=PKIServer, DC=contoso, DC=com"
+$ClientAuthCerts = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object {$_.Issuer -eq $CAIssuingServer} | Where-Object {$_.Extensions | Where-Object {$_.Format(0) -match "Client Authenication"}}
+# Check the certificates to see if they are valid and return $false if any are not valid
+$CertsCompliance = $true
+Foreach ($Certificate in $ClientAuthCerts) {
+    If (Test-Certificate $Certificate -ErrorAction SilentlyContinue) {
+        # Certificate is valid
+    } Else {
+        $CertsCompliance = $false
+    }
 }
+# Return the valid of the certificate after checking
+Return $CertsCompliance
 #EndRegion
 #Region: Remediation
 
