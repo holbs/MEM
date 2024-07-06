@@ -98,8 +98,8 @@ Foreach ($File in $FileNames) {
     If (Test-Path "$FilePath\$File") {
         Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\regsvr32.exe" -ArgumentList "/u /s $File" -Wait
         If (Test-Path "$FilePath\$File") {
-            New-Item -Path "$env:ProgramData\Microsoft\MSXML" -ItemType Directory
-            Move-Item -Path "$FilePath\$File" -Destination "$env:ProgramData\Microsoft\MSXML\$File.bak"
+            New-Item -Path "$env:ProgramData\Microsoft\MSXML" -ItemType Directory -Force | Out-Null
+            Move-Item -Path "$FilePath\$File" -Destination "$env:ProgramData\Microsoft\MSXML\$File.bak" -Force | Out-Null
         }
     }
 }
@@ -107,7 +107,7 @@ Foreach ($File in $FileNames) {
 Foreach ($Path in $CLSIDPaths) {
     Foreach ($ID in $CLSIDs) {
         If (Test-Path "$Path\$ID") {
-            New-Item -Path "$env:ProgramData\Microsoft\MSXML" -ItemType Directory
+            New-Item -Path "$env:ProgramData\Microsoft\MSXML" -ItemType Directory -Force | Out-Null
             $ProgID = Get-ItemProperty -Path "$Path\$ID\ProgID" | Select-Object -ExpandProperty '(default)'
             Start-Process -WindowStyle hidden -FilePath "$env:WINDIR\System32\reg.exe" -ArgumentList "EXPORT $($Path.Replace(':',''))\$ID $env:ProgramData\Microsoft\MSXML\$ProgID.reg /y" -Wait
             Remove-Item -Path "$Path\$ID" -Force -Recurse -Confirm:$false

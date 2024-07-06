@@ -11,6 +11,6 @@ Try {
 }
 #EndRegion
 #Region: Remediation
-New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WorkplaceJoin'
-New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WorkplaceJoin' -Name 'BlockAADWorkplaceJoin' -Value '1' -Type DWord -Force
+New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WorkplaceJoin' -Force | Out-Null
+New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WorkplaceJoin' -Name 'BlockAADWorkplaceJoin' -Value '1' -Type DWord -Force | Out-Null
 #EndRegion

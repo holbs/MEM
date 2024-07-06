@@ -1,9 +1,5 @@
 #Region: Detection
-$RegistryLocations = @(
-    "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
-    "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-)
-$RegistryLocations | Foreach-Object {
+"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall","HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | Foreach-Object {
     $RegistryKeys = Get-ItemProperty "$_\*"
     Foreach ($Key in $RegistryKeys) {
         If ($Key.DisplayName -like "Mozilla Firefox *") {
@@ -13,11 +9,7 @@ $RegistryLocations | Foreach-Object {
 }
 #EndRegion
 #Region: Uninstall
-$RegistryLocations = @(
-    "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
-    "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-)
-$RegistryLocations | Foreach-Object {
+"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall","HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | Foreach-Object {
     $RegistryKeys = Get-ItemProperty "$_\*"
     Foreach ($Key in $RegistryKeys) {
         If ($Key.DisplayName -like "Mozilla Firefox *") {
