@@ -1,6 +1,6 @@
 #Region: Detection
 $CAIssuingServer = "CN=PKIServer, DC=contoso, DC=com"
-$ClientAuthCerts = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object {$_.Issuer -eq $CAIssuingServer} | Where-Object {$_.Extensions | Where-Object {$_.Format(0) -match "Client Authenication"}}
+$ClientAuthCerts = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object {$_.Issuer -eq $CAIssuingServer} | Where-Object {$_.Extensions | Where-Object {$_.Format(0) -match "Client Auth"}}
 # Check the certificates to see if they are valid and return $false if any are not valid
 $CertsCompliance = $true
 Foreach ($Certificate in $ClientAuthCerts) {
