@@ -8,6 +8,7 @@ If ($KernelReboot[0].TimeCreated -ge (Get-Date).AddDays(-7)) {
 }
 #EndRegion
 #Region: Remediation
+$Time = [DateTimeOffset]::Now.ToUnixTimeSeconds()
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\SMS\Mobile Client\Reboot Management\RebootData' -Name 'RebootBy' -Value $Time -Type QWord -Force -ErrorAction SilentlyContinue
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\SMS\Mobile Client\Reboot Management\RebootData' -Name 'RebootValueInUTC' -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\SMS\Mobile Client\Reboot Management\RebootData' -Name 'NotifyUI' -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue
