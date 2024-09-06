@@ -11,6 +11,7 @@ $ActiveAdaptersGuids = Get-NetAdapter | Where-Object {$_.Status -eq "Up"} | Sele
 Foreach ($Guid in $ActiveAdaptersGuids) {
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$Guid\*" -Force | Out-Null
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\DusmSvc\Profiles\$Guid\*" -Name UserCost -Value 0 -Type DWord -Force | Out-Null
-    Restart-Service -Name DusmSvc -Force
 }
+# Restart the Data Usage service to commit the changes
+Restart-Service -Name DusmSvc -Force
 #EndRegion
