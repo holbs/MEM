@@ -1,5 +1,5 @@
 # Retrieve list of MOF files (excluding any that contain "Uninstall", "Remove", or "AutoRecover"), MFL files (excluding any that contain "Uninstall", or "Remove"), & DLL files from the WBEM folder
-$WbemContents = Get-ChildItem -Path "$env:WINDIR\System32\Wbem" -Recurse -File
+$WbemContents = Get-ChildItem -Path "$env:WINDIR\System32\Wbem" -Recurse -File -Force
 $MofFiles = $WbemContents | Where-Object {$_.Extension -eq ".mof"} | Where-Object {$_.FullName -notmatch "Uninstall|Remove|Autorecover"} | Select-Object -ExpandProperty FullName
 $MflFiles = $WbemContents | Where-Object {$_.Extension -eq ".mfl"} | Where-Object {$_.FullName -notmatch "Uninstall|Remove"} | Select-Object -ExpandProperty FullName
 $DllFiles = $WbemContents | Where-Object {$_.Extension -eq ".dll"} | Select-Object -ExpandProperty FullName
