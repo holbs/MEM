@@ -5,6 +5,6 @@ If (Test-Path -Path "$env:SystemDrive\Users\*\AppData\Local\Google\Chrome\Applic
     Return $true
 }
 #EndRegion
-#Region: Remediation
+#Region: Uninstallation
 Get-Item -Path "$env:SystemDrive\Users\*\AppData\Local\Google\Chrome\Application" | Remove-Item -Recurse -Force -Confirm:$false
 #EndRegion
