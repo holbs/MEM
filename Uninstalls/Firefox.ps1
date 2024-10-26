@@ -14,9 +14,9 @@ $PathsToCheck | Foreach-Object {
 #EndRegion
 #Region: Uninstall
 $helperPaths = @(
-    "${env:SystemDrive}\Users\*\AppData\*\Mozilla Firefox\uninstall\helper.exe",
-    "${env:ProgramFiles}\Mozilla Firefox\uninstall\helper.exe",
-    "${env:ProgramFiles(x86)}\Mozilla Firefox\uninstall\helper.exe"
+    "${env:SystemDrive}\Users\*\AppData\*\*Firefox*\uninstall\helper.exe",
+    "${env:ProgramFiles}\*Firefox*\uninstall\helper.exe",
+    "${env:ProgramFiles(x86)}\*Firefox*\uninstall\helper.exe"
 )
 # Find any installation of Firefox and uninstall using helper.exe
 $helperPaths | Foreach-Object {
