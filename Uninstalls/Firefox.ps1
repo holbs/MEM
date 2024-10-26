@@ -1,9 +1,10 @@
 #Region: Detection
 $PathsToCheck = @(
-    "${env:SystemDrive}\Users\*\AppData\*\Mozilla",
-    "${env:SystemDrive}\Users\*\AppData\*\Mozilla Firefox",
-    "${env:ProgramFiles}\Mozilla Firefox",
-    "${env:ProgramFiles(x86)}\Mozilla Firefox"
+    "${env:SystemDrive}\Users\*\AppData\*\*Firefox*",
+    "${env:ProgramFiles}\*Firefox*",
+    "${env:ProgramFiles(x86)}\*Firefox*",
+    "${env:SystemDrive}\Users\*\AppData\*\Microsoft\Windows\Start Menu\Programs\*Firefox*.lnk",
+    "${env:ProgramData}\Microsoft\Windows\Start Menu\Programs\*Firefox*.lnk"
 )
 $PathsToCheck | Foreach-Object {
     If (Test-Path -Path $_) {
@@ -32,8 +33,9 @@ Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall',
     Wait-Process -Id $Firefox.Id
 }
 # Clean up folders and shortcuts
-Get-Item -Path "$env:SystemDrive\Users\*\AppData\*\Mozilla" | Remove-Item -Recurse -Force
-Get-Item -Path "$env:SystemDrive\Users\*\AppData\*\Mozilla Firefox" | Remove-Item -Recurse -Force
-Get-Item -Path "$env:SystemDrive\Users\*\AppData\*\Microsoft\Windows\Start Menu\Programs\Firefox.lnk" | Remove-Item -Force
-Get-Item -Path "$env:SystemDrive\Users\*\AppData\*\Microsoft\Windows\Start Menu\Programs\Firefox Private Browsing.lnk" | Remove-Item -Force
+Get-Item -Path "${env:SystemDrive}\Users\*\AppData\*\*Firefox*" | Remove-Item -Recurse -Force
+Get-Item -Path "${env:ProgramFiles}\*Firefox*" | Remove-Item -Recurse -Force
+Get-Item -Path "${env:ProgramFiles(x86)}\*Firefox*" | Remove-Item -Recurse -Force
+Get-Item -Path "${env:SystemDrive}\Users\*\AppData\*\Microsoft\Windows\Start Menu\Programs\*Firefox*.lnk" | Remove-Item -Force
+Get-Item -Path "${env:ProgramData}\Microsoft\Windows\Start Menu\Programs\*Firefox*.lnk" | Remove-Item -Force
 #EndRegion
