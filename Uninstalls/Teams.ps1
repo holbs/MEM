@@ -30,10 +30,6 @@ Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall',
     Wait-Process -Id $Process.Id
     # Wait a bit longer
     Start-Sleep -Seconds 5
-    # If the uninstall returns anything other than exit code 0, exit the script with that exit code to pass it back to ConfigMgr (or Intune, or anything else) to handle based on defined exit codes
-    If ($Process.ExitCode -ne 0) {
-        [Environment]::Exit($Process.ExitCode)
-    }
 }
 # Clean up folders and shortcuts
 Get-ChildItem -Path "$env:SystemDrive\Users\*\AppData\*\Microsoft\Teams" -Recurse -File | Remove-Item -Force -Confirm:$false
