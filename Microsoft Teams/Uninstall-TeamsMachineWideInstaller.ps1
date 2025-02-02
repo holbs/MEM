@@ -30,7 +30,7 @@ Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall',
     Start-Sleep -Seconds 5
     # If the uninstall was successful, remove the registry key if it's not been automatically removed
     If ($TeamsMachineWideInstaller.ExitCode -eq 0) {
-        Get-Item -Path $_.PSPath | Remove-Item -Force
+        Get-Item -Path $_.PSPath | Remove-Item -Recurse -Force -Confirm:$false
     }
 }
 #EndRegion
