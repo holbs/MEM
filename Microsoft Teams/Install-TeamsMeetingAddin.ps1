@@ -17,6 +17,14 @@
 #Region: Detection
 $MSTeams = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq 'MSTeams'}
 $TeamsMeetingAddin = Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall','HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall' | Get-ItemProperty | Where-Object {$_.DisplayName -eq 'Microsoft Teams Meeting Add-in for Microsoft Office'}
+# If the Teams Meeting Addin InstallSource matches the MSTeams InstallLocation, we can assume it's installed, if the Teams Meeting Addin is not present, or doesn't match then it's not installed (properly)
+If ($TeamsMeetingAddin -and $TeamsMeetingAddin.InstallSource -eq ([string]$MSteams.InstallLocation -Replace('AppxManifest.xml',''))) {
+    Write-Output "Microsoft Teams Meeting Add-in for Microsoft Office is installed"
+}
+#EndRegion
+#Region: Installation
+$MSTeams = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq 'MSTeams'}
+$TeamsMeetingAddin = Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall','HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall' | Get-ItemProperty | Where-Object {$_.DisplayName -eq 'Microsoft Teams Meeting Add-in for Microsoft Office'}
 # If the Teams Meeting Addin is in the registry but we're running the installation script then it must've failed detection and be a broken install that we need to repair and then uninstall
 If ($TeamsMeetingAddin) {
     # We will start by collecting the MSTeams version number from the Teams Meeting Addin InstallSource out of the registry
