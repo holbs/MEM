@@ -7,7 +7,7 @@
 #Region: Detection
 Try {
     $Signature = Get-AuthenticodeSignature -FilePath "$env:LOCALAPPDATA\Microsoft\Teams\update.exe"
-    If ($Signature.SignerCertificate.Subject -eq "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US") {
+    If ($Signature.Status -eq "Valid" -and $Signature.SignerCertificate.Subject -eq "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US") {
         Write-Output "Installed"
     } Else {
         Throw "File not signed by Microsoft"
@@ -19,7 +19,7 @@ Try {
 #Region: Uninstall
 Try {
     $Signature = Get-AuthenticodeSignature -FilePath "$env:LOCALAPPDATA\Microsoft\Teams\update.exe"
-    If ($Signature.SignerCertificate.Subject -eq "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US") {
+    If ($Signature.Status -eq "Valid" -and $Signature.SignerCertificate.Subject -eq "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US") {
         $Teams = Start-Process -FilePath "$env:LOCALAPPDATA\Microsoft\Teams\update.exe" -ArgumentList "-uninstall -s" -PassThru
         Wait-Process -Id $Teams.Id
     } Else {
