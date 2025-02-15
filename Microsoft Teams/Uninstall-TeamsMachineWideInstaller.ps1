@@ -1,6 +1,6 @@
 <#
 .DESCRIPTION
-    This script is deployed to uninstall any version of Teams Machine Wide Installer from a workstation and write a log to %ProgramData%\Microsoft\IntuneManagementExtension\Logs\Software
+    This script is deployed to uninstall any version of Teams Machine Wide Installer (Teams Classic) from a workstation and write a log to %ProgramData%\Microsoft\IntuneManagementExtension\Logs\Software
 #>
 
 #Requires -RunAsAdministrator

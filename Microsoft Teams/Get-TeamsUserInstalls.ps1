@@ -1,6 +1,6 @@
 <#
 .DESCRIPTION
-    This script to be deployed as a configuration item to check if Microsoft Teams is in any of the users %LOCALAPPDATA%\Microsoft folders. This reports compliant if Microsoft Teams is not found. The non-complaint devices then make up the membership of a device collection.
+    This script to be deployed as a configuration item to check if Microsoft Teams Classic is in any of the users %LOCALAPPDATA%\Microsoft folders. This reports compliant if Microsoft Teams is not found. The non-complaint devices then make up the membership of a device collection.
 #>
 
 #Requires -RunAsAdministrator
