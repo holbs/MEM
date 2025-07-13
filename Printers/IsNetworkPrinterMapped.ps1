@@ -33,7 +33,7 @@ Try {
     # Registry path for user's printer connections
     $PrinterRegPath = "Registry::HKEY_USERS\$UserSID\Printers\Connections"
     # Check if the registry path exists. If it does not exist, it means no printers are mapped for the user. Exit silently without outputting anything to fail detection and kick off the installation.
-    If (-not (Test-Path $PrinterRegPath)) {
+    If (-not (Test-Path -Path $PrinterRegPath)) {
         Exit 0
     }
     # Get all printer connections for the user
