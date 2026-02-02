@@ -15,7 +15,7 @@ If ($TeamsMeetingAddin -and $TeamsMeetingAddin.InstallSource -eq ([string]$MStea
     Write-Output "The Teams Meeting Add-in InstallSource matches the MSTeams InstallLocation."
     Exit 0
 } Else {
-    Write-Output "The Teams Meeting Add-in InstallSource of $($TeamsMeetingAddin.InstallSource) does not match the MSTeams InstallLocation of $($MSTeams.InstallLocation), or the Add-in is not present."
+    Write-Output "The Teams Meeting Add-in InstallSource of '$($TeamsMeetingAddin.InstallSource)' does not match the MSTeams InstallLocation of '$($MSTeams.InstallLocation)', or the Add-in is not present."
     Exit 1
 }
 #EndRegion
