@@ -16,18 +16,35 @@ If ($Firefox) {
 }
 #EndRegion
 #Region: Uninstall
-Try {
-    $helper = Start-Process -FilePath "$env:SystemDrive\Users\*\AppData\Local\Mozilla Firefox\uninstall\helper.exe" -ArgumentList "/s" -PassThru
-    Wait-Process -Id $helper.Id -Timeout 300 -ErrorAction Stop
-    # Exit with the same code as helper.exe
-    Exit $helper.ExitCode
-} Catch {
-    Write-Output "Failed to run helper.exe: $_"
-    # Exit with the same code as helper.exe if it was started
-    If ($helper) {
-        Exit $helper.ExitCode
-    } Else {
-        Exit 1
+$helpers = Get-Item -Path "$env:SystemDrive\Users\*\AppData\Local\Mozilla Firefox\uninstall\helper.exe"
+# Set up an array to collect exit codes
+$ExitCodes = @()
+# Loop through the helpers and uninstall each Firefox instance and add the exit code to the array
+$helpers.FullName | Foreach-Object {
+    Try {
+        $helper = $null
+        $helper = Start-Process -FilePath $_ -ArgumentList "/s" -PassThru
+        Wait-Process -Id $helper.Id -Timeout 300 -ErrorAction Stop
+        # Without any error thrown, add the exit code from helper.exe to the array
+        $ExitCodes += $helper.ExitCode
+    } Catch {
+        # If the error was due to a timeout, add a exit code 418. For other errors, add the exit code from helper.exe if it was started, else add exit code 1
+        If ($_.FullyQualifiedErrorId -eq "ProcessNotTerminated,Microsoft.PowerShell.Commands.WaitProcessCommand") {
+            $ExitCodes += 418
+        } Elseif ($helper) {
+            $ExitCodes += $helper.ExitCode
+        } Else {
+            $ExitCodes += 1
+        }
+        Continue
     }
+}
+# Determine final exit code
+$Failed = $ExitCodes | Where-Object {$_ -ne 0} | Sort-Object -Descending
+# If any uninstall failed, exit with the first non-zero exit code, else exit 0
+If ($Failed) {
+    Exit $Failed[0]
+} Else {
+    Exit 0
 }
 #EndRegion
