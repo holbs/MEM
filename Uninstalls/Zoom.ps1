@@ -14,10 +14,8 @@ $Installs = @()
 $Installs += Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall","HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | Get-ItemProperty | Where-Object {$_.DisplayName -like "Zoom Workplace (*)"}
 $Installs += Get-Item -Path "$env:SystemDrive\Users\*\AppData\Roaming\Zoom\bin\Zoom.exe" -ErrorAction SilentlyContinue
 If ($Installs.Count -gt 0) {
-    Write-Output "Installed"
     Exit 0
 } Else {
-    Write-Output "Not Installed"
     Exit 1
 }
 #EndRegion
@@ -30,12 +28,16 @@ Try {
         New-Item -Path "$env:ProgramData\Microsoft\IntuneManagementExtension\Logs\Software" -ItemType Directory -Force
     }
     # Move the cleanzoom.log file from the script root to a set folder
-    Move-Item -Path "$PSScriptRoot\cleanzoom.log" -Destination "$env:ProgramData\Microsoft\IntuneManagementExtension\Logs\Software" -Force
+    Move-Item -Path "$PSScriptRoot\cleanzoom.log" -Destination "$env:ProgramData\Microsoft\IntuneManagementExtension\Logs\Software" -Force -ErrorAction SilentlyContinue
     # Exit with the same code as CleanZoom.exe
     Exit $Zoom.ExitCode
 } Catch {
     Write-Output "Failed to run CleanZoom.exe: $_"
-    # Exit with the same code as CleanZoom.exe
-    Exit $Zoom.ExitCode
+    # Exit with the same code as CleanZoom.exe if it was started
+    If ($Zoom) {
+        Exit $Zoom.ExitCode
+    } Else {
+        Exit 1
+    }
 }
 #EndRegion
