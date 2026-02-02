@@ -20,7 +20,7 @@ If ($Zoom) {
 #Region: Uninstall
 Try {
     $Zoom = Start-Process -FilePath "$PSScriptRoot\CleanZoom.exe" -ArgumentList "/silent" -PassThru
-    Wait-Process -Id $Zoom.Id -Timeout 300 -ErrorAction Stop
+    Get-Process -Id $Zoom.Id -ErrorAction SilentlyContinue | Wait-Process -Timeout 300 -ErrorAction Stop
     # Create logs folder if it doesn't exist
     If (-not (Test-Path -Path "$env:ProgramData\Microsoft\IntuneManagementExtension\Logs\Software" -PathType Container)) {
         New-Item -Path "$env:ProgramData\Microsoft\IntuneManagementExtension\Logs\Software" -ItemType Directory -Force
