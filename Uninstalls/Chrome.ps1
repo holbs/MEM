@@ -2,13 +2,13 @@
 .SYNOPSIS
     Uninstalls Google Chrome installed as user.
 .DESCRIPTION
-    The detection script is used to detect if Google Chrome has been installed by the user by checking the logged on users %LOCALAPPDATA% folder. The uninstall program uses Google Chrome's setup.exe to silently remove it from the system.
+    The detection script is used to detect if Google Chrome has been installed by the user by checking the logged on users %LOCALAPPDATA% folder. The uninstall program uses Google Chrome's setup.exe to silently remove it from that logged on users profile.
 .NOTES
-    Set up an application using the detection script to detect Google Chrome installations. Set the uninstall script as the uninstall program. Deploy the uninstall program to remove Google Chrome silently. This needs to run as the user. The SYSTEM account wont be able to uninstall Chrome installed in user context.
+    This needs to run as the user. The SYSTEM account wont be able to uninstall Chrome installed in user context. This script assumes exit code 19 is a successful uninstall as documented in the Chromium source files https://github.com/chromium/chromium/blob/main/chrome/installer/util/util_constants.h
 #>
 
 #Region: Detection
-$Chrome = Get-Item -Path "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe" -ErrorAction SilentlyContinue
+$Chrome = Test-Path -Path "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe" -PathType Leaf -ErrorAction SilentlyContinue
 If ($Chrome) {
     Exit 0
 } Else {
@@ -20,7 +20,7 @@ Get-Process -Name "chrome" -ErrorAction SilentlyContinue | Where-Object {$_.Path
 # If there was a pending Chrome update, wait for a moment to let Chrome release any locks on files
 Start-Sleep -Seconds 5
 # Get all installer folders sorted by version descending so the latest version is uninstalled first
-$installerFolders = Get-Item -Path "$env:LOCALAPPDATA\Google\Chrome\Application\*\Installer" | Sort-Object {[version]$_.Parent.BaseName.ToString()} -Descending
+$installerFolders = Get-Item -Path "$env:LOCALAPPDATA\Google\Chrome\Application\*\Installer" | Sort-Object {[version]$_.Parent.BaseName} -Descending
 # Get the setup.exe paths from the sorted installer folders
 $setups = $installerFolders | Foreach-Object {$Path = Join-Path -Path $_.Parent.FullName -ChildPath "Installer\setup.exe";If (Test-Path $Path) {$Path}}
 # Set up an array to collect exit codes
@@ -48,7 +48,7 @@ $setups | Foreach-Object {
     }
 }
 # Determine final exit code
-$Failed = $ExitCodes | Where-Object {$_ -ne 0} | Sort-Object -Descending
+$Failed = $ExitCodes | Where-Object {$_ -ne 0 -and $_ -ne 19} | Sort-Object -Descending
 # If any uninstall failed, exit with the first non-zero exit code, else exit 0
 If ($Failed) {
     Exit $Failed[0]
