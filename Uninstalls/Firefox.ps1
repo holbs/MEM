@@ -24,7 +24,7 @@ $helpers.FullName | Foreach-Object {
     Try {
         $helper = $null
         $helper = Start-Process -FilePath $_ -ArgumentList "/s" -PassThru
-        Wait-Process -Id $helper.Id -Timeout 300 -ErrorAction Stop
+        Get-Process -Id $helper.Id -ErrorAction SilentlyContinue | Wait-Process -Timeout 300 -ErrorAction Stop
         # Without any error thrown, add the exit code from helper.exe to the array
         $ExitCodes += $helper.ExitCode
     } Catch {
