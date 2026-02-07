@@ -10,7 +10,7 @@
 #>
 
 #Region: Detection
-$Zoom += Get-Item -Path "$env:SystemDrive\Users\*\AppData\Roaming\Zoom\bin\Zoom.exe" -ErrorAction SilentlyContinue
+$Zoom = Get-Item -Path "$env:SystemDrive\Users\*\AppData\Roaming\Zoom\bin\Zoom.exe" -ErrorAction SilentlyContinue
 If ($Zoom) {
     Exit 0
 } Else {
