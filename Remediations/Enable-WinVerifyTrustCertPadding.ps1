@@ -4,7 +4,7 @@
 .DESCRIPTION
     This script checks if the EnableCertPaddingCheck registry value is set to 1 in both the 32-bit and 64-bit paths for WinVerifyTrust. If not, it sets the value to 1 in both locations.
 .NOTES
-    Microsoft have previously published guidance that these settings should be strings, but that has since been updated to indicate they should be DWORDs: https://msrc.microsoft.com/update-guide/vulnerability/CVE-2013-3900
+    Microsoft have previously published guidance that these settings should be strings, then DWORDs, but that has since been updated to indicate they could be either. See the revisions section of https://msrc.microsoft.com/update-guide/vulnerability/CVE-2013-3900
 #>
 
 #Region: Detection
